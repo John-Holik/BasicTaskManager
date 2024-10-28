@@ -9,7 +9,20 @@
 
 // Functions
 // *********************************************************************************
+int isFileCreated(){
+    // Checks if the file used for storing tasks is already created, if not it will create it
+    // ios::out opens the file in write mode 
+    // ios::app opens the file in append mode
+    std::fstream file("tasks.txt", std::ios::out | std::ios::app); 
 
+    if(file.is_open()){
+        file.close();
+    }else{
+        return -999;
+    }
+    return 0;
+
+}// end isFileCreated
 int chooseTask(){
     // Start by letting user choose what action they want to do.
     std::cout << "To view current tasks type '1', to add tasks type '2', to remove tasks type '3': ";
@@ -72,6 +85,14 @@ bool continueInput(){
 // Main
 // *********************************************************************************
 int main(){
+    // check if tasks.txt file is present
+    int validFile;
+    validFile = isFileCreated();
+    if(validFile == -999){
+        // error opening or creating file, must retart program
+        return -999;
+    }
+    
     // Create a loop to let the user switch between actions after completion
     bool keepRunning = true;
 
