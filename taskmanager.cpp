@@ -89,6 +89,7 @@ void viewTasks(){
         if(getLineCount() == 0){
             std::cout << "You have no tasks left to do!" << std::endl;
         }else{
+            std::cout << std::endl;
             std::cout << "Current Tasks: " << std::endl;
             while (std::getline(file, line)){
                 std::cout << line << std::endl;
@@ -113,11 +114,13 @@ void addTasks(){
     int taskNum = getLineCount() + 1; // For formatting task numbers
 
     if(file.is_open()){
+        std::cout << std::endl;
         std::cout << "Enter the name/description of the task you would like to add: ";
         std::cin.ignore();
         std::cin.sync();
         std::getline(std::cin, taskToAdd);
         file << taskNum << ") " << taskToAdd << "\n";
+        std::cout << "Task added. \n";
     }else{
         std::cerr << "Error opening file. Program Aborting" << std::endl;
         exit(EXIT_FAILURE);
@@ -179,7 +182,7 @@ void deleteTasks(){
     
     // Display current tasks:
     viewTasks();
-
+    std::cout << std::endl;
     int numOfTasks = getLineCount();
     int taskNum = -9;
     // Get valid task number to delete
@@ -207,6 +210,7 @@ void deleteTasks(){
 
 bool continueInput(){
     char doContinue;
+    std::cout << std::endl;
     std::cout << "Would you like to continue? (y/n): ";
 
     // Check if input is valid
@@ -256,6 +260,7 @@ int main(){
         // Add tasks to file
         case 2:
             addTasks();
+            viewTasks();
             break;
 
         // Remove tasks from file
