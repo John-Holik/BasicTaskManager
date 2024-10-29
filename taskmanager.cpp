@@ -5,7 +5,8 @@
 
 #include <iostream>
 #include <string>
-#include <fstream>
+#include <fstream> // For file handling
+#include <cstdlib> // For exit()
 
 // Functions
 // *********************************************************************************
@@ -18,11 +19,37 @@ int isFileCreated(){
     if(file.is_open()){
         file.close();
     }else{
-        return -999;
+        std::cout << "Error opening or creating file. Program Aborting";
+        exit(EXIT_FAILURE);
     }
     return 0;
 
 }// end isFileCreated
+
+
+
+int getLineCount(){
+    // Used to read the number of lines in the text file. Each line should be a task.
+    std::ifstream file("tasks.txt");
+    int lineCount = 0;
+    std::string line;
+
+    if(file.is_open()){
+        while(std::getline(file, line)){
+            lineCount++;
+        }
+    }else{
+        std::cout << "Error opening file. Program Aborting";
+        exit(EXIT_FAILURE);
+    }
+
+    file.close();
+
+    return lineCount;
+}// end getLineCount
+
+
+
 int chooseTask(){
     // Start by letting user choose what action they want to do.
     std::cout << "To view current tasks type '1', to add tasks type '2', to remove tasks type '3': ";
@@ -43,17 +70,24 @@ int chooseTask(){
 }// end chooseTask
 
 
+
 void viewTasks(){
 
 }// end viewTasks
+
+
 
 void addTasks(){
 
 }//end addTasks
 
+
+
 void removeTasks(){
 
 }//end removeTasks
+
+
 
 bool continueInput(){
     char doContinue;
@@ -78,21 +112,16 @@ bool continueInput(){
     }else{ // otherwise they entered 'y' and they want to do another action
         return true;
     }
-    
 }//end continueInput
+
 
 
 // Main
 // *********************************************************************************
 int main(){
     // check if tasks.txt file is present
-    int validFile;
-    validFile = isFileCreated();
-    if(validFile == -999){
-        // error opening or creating file, must retart program
-        return -999;
-    }
-    
+    isFileCreated();
+
     // Create a loop to let the user switch between actions after completion
     bool keepRunning = true;
 
