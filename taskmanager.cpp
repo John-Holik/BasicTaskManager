@@ -10,6 +10,7 @@
 #include <fstream> // For file handling
 #include <cstdlib> // For exit()
 #include <vector>
+#include <limits>
 
 
 
@@ -67,6 +68,8 @@ int chooseAction(){
         }
         else{
             std::cout << "Invalid Input. Please enter 1,2, or 3: ";
+            std::cin.clear();
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
         }
 
     } while (!validInput);
