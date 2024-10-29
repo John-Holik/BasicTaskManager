@@ -3,10 +3,15 @@
 // Desc   : Creating a basic task manager using the CLI in C++
 // *********************************************************************************
 
+
+
 #include <iostream>
 #include <string>
 #include <fstream> // For file handling
 #include <cstdlib> // For exit()
+#include <vector>
+
+
 
 // Functions
 // *********************************************************************************
@@ -50,7 +55,7 @@ int getLineCount(){
 
 
 
-int chooseTask(){
+int chooseAction(){
     // Start by letting user choose what action they want to do.
     std::cout << "To view current tasks type '1', to add tasks type '2', to remove tasks type '3': ";
     bool validInput = false;
@@ -67,7 +72,7 @@ int chooseTask(){
     } while (!validInput);
     // return the valid input integer
     return input;
-}// end chooseTask
+}// end chooseAction
 
 
 
@@ -76,29 +81,124 @@ void viewTasks(){
     std::ifstream file("tasks.txt");
     std::string line; 
 
-    if(file.is_open()){
-        while(std::getline(file, line)){
-            std::cout << line << std::endl;
+    if(file.is_open()){ 
+        // Check if tasks list is empty
+        if(getLineCount() == 0){
+            std::cout << "You have no tasks left to do!" << std::endl;
+        }else{
+            std::cout << "Current Tasks: " << std::endl;
+            while (std::getline(file, line)){
+                std::cout << line << std::endl;
+            }
         }
     }else{
         std::cerr << "Error opening file. Program Aborting" << std::endl;
         exit(EXIT_FAILURE);
     }
-    
+
+   
+
     return;
 }// end viewTasks
 
 
 
 void addTasks(){
+    // open the file in write mode. 
+    std::ofstream file("tasks.txt", std::ios::app);
+    std::string taskToAdd;
+    int taskNum = getLineCount() + 1; // For formatting task numbers
 
+    if(file.is_open()){
+        std::cout << "Enter the name/description of the task you would like to add: ";
+        std::cin.ignore();
+        std::cin.sync();
+        std::getline(std::cin, taskToAdd);
+        file << taskNum << ") " << taskToAdd << "\n";
+    }else{
+        std::cerr << "Error opening file. Program Aborting" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    return;
 }//end addTasks
 
 
 
-void removeTasks(){
+void writeTasks(const std::vector<std::string> &tasks){
+    std::ofstream file("tasks.txt");
+    if (file.is_open()){
+        for (size_t i = 0; i < tasks.size(); i++){
+            // Add proper numbering and task description
+            file << (i + 1) << ") " << tasks[i] << '\n';
+        }
+    }else{
+        std::cerr << "Error opening file. Program Aborting" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    file.close();
+}//end writeTasks
 
-}//end removeTasks
+
+
+std::vector<std::string> readTasks(){
+    std::vector<std::string> tasksVec;
+    std::ifstream file("tasks.txt");
+    std::string line;
+
+    if (file.is_open()){
+        while (std::getline(file, line)){
+            // Find the first space after the task number and skip past it
+            size_t pos = line.find(" ");
+            if (pos != std::string::npos){
+                tasksVec.push_back(line.substr(pos + 1)); // Skip number and space
+            }else{
+                tasksVec.push_back(line); // Add unformatted line as fallback
+            }
+        }
+    }else{
+        std::cerr << "Error opening file. Program Aborting" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    file.close();
+
+    return tasksVec;
+}//end readTasks
+
+
+
+void deleteTasks(){
+    // Make sure that there are tasks to delete;
+    if(getLineCount() == 0){
+        // If not, return
+        std::cout << "You have no tasks to delete. Please add some before continuing. \n";
+        return; 
+    } 
+    
+    // Display current tasks:
+    viewTasks();
+
+    int numOfTasks = getLineCount();
+    int taskNum = -9;
+    // Get valid task number to delete
+    bool validInput = false;
+    std::cout << "Enter the task number you wish to delete: ";
+    do{
+
+        std::cin >> taskNum;
+        if (taskNum >= 1 && taskNum <= numOfTasks){
+            validInput = true;
+        }else{
+            std::cout << "Invalid task number. Valid task numbers are 1 - " << numOfTasks << ": ";
+        }
+    } while (!validInput);
+
+    // Now we have a valid input, so we need to delete the task
+    std::vector<std::string> tasksVec = readTasks();
+    tasksVec.erase(tasksVec.begin() + taskNum - 1); // Remove task by its position
+    writeTasks(tasksVec);                           // Rewrite tasks with updated numbering
+
+    return;
+}//end deleteTasks
 
 
 
@@ -141,21 +241,23 @@ int main(){
     do{
         // Let the User Choose their action:
         int input = -1;
-        input = chooseTask();
+        input = chooseAction();
 
-        switch (input)
-        {
+        switch (input){
+
         // View tasks in file
         case 1:
             viewTasks();
             break;
+
         // Add tasks to file
         case 2:
             addTasks();
             break;
+
         // Remove tasks from file
         case 3:
-            removeTasks();
+            deleteTasks();
             break;
         }
         
