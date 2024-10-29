@@ -19,7 +19,7 @@ int isFileCreated(){
     if(file.is_open()){
         file.close();
     }else{
-        std::cout << "Error opening or creating file. Program Aborting";
+        std::cerr << "Error opening or creating file. Program Aborting" << std::endl;
         exit(EXIT_FAILURE);
     }
     return 0;
@@ -39,7 +39,7 @@ int getLineCount(){
             lineCount++;
         }
     }else{
-        std::cout << "Error opening file. Program Aborting";
+        std::cerr << "Error opening file. Program Aborting" << std::endl;
         exit(EXIT_FAILURE);
     }
 
@@ -72,7 +72,20 @@ int chooseTask(){
 
 
 void viewTasks(){
+    // Display the contents of the file:
+    std::ifstream file("tasks.txt");
+    std::string line; 
 
+    if(file.is_open()){
+        while(std::getline(file, line)){
+            std::cout << line << std::endl;
+        }
+    }else{
+        std::cerr << "Error opening file. Program Aborting" << std::endl;
+        exit(EXIT_FAILURE);
+    }
+    
+    return;
 }// end viewTasks
 
 
