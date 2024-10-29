@@ -87,6 +87,7 @@ void viewTasks(){
     if(file.is_open()){ 
         // Check if tasks list is empty
         if(getLineCount() == 0){
+            std::cout << std::endl;
             std::cout << "You have no tasks left to do!" << std::endl;
         }else{
             std::cout << std::endl;
